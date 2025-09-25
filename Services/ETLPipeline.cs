@@ -15,7 +15,22 @@ public class ETLPipeline
     {
         _logger = logger;
         _configuration = configuration;
-        _csvFilesPath = _configuration["ETLSettings:CsvFilesPath"] ?? "Data";
+        var configPath = _configuration["ETLSettings:CsvFilesPath"] ?? "Data";
+
+        // Si no es una ruta absoluta, usar el directorio del proyecto en lugar del directorio de salida
+        if (!Path.IsPathRooted(configPath))
+        {
+            // Buscar el directorio del proyecto (donde está el .csproj)
+            var baseDir = AppContext.BaseDirectory;
+            var projectDir = Directory.GetParent(baseDir)?.Parent?.Parent?.Parent?.FullName ?? baseDir;
+            _csvFilesPath = Path.Combine(projectDir, configPath);
+        }
+        else
+        {
+            _csvFilesPath = configPath;
+        }
+        _logger.LogInformation($"Directorio base: {AppContext.BaseDirectory}");
+        _logger.LogInformation($"Ruta de archivos CSV configurada: {_csvFilesPath}");
     }
 
     public async Task<bool> ExecuteFullPipelineAsync()
@@ -71,6 +86,8 @@ public class ETLPipeline
             // EXTRACCIÓN
             _logger.LogInformation($"Extrayendo datos de {csvFileName}");
             var csvFilePath = Path.Combine(_csvFilesPath, csvFileName);
+            _logger.LogInformation($"Ruta completa del archivo: {csvFilePath}");
+            _logger.LogInformation($"¿Existe el archivo?: {File.Exists(csvFilePath)}");
             var datosExtraidos = await extractor.ExtractFromCsvAsync(csvFilePath);
             _logger.LogInformation($"Extraídos {datosExtraidos.Count()} registros de {entityName}");
 
