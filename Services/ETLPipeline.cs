@@ -10,6 +10,7 @@ public class ETLPipeline
     private readonly ILogger<ETLPipeline> _logger;
     private readonly IConfiguration _configuration;
     private readonly string _csvFilesPath;
+    private IdMappingService? _idMappingService;
 
     public ETLPipeline(ILogger<ETLPipeline> logger, IConfiguration configuration)
     {
@@ -29,7 +30,6 @@ public class ETLPipeline
         {
             _csvFilesPath = configPath;
         }
-        _logger.LogInformation($"Directorio base: {AppContext.BaseDirectory}");
         _logger.LogInformation($"Ruta de archivos CSV configurada: {_csvFilesPath}");
     }
 
@@ -49,13 +49,16 @@ public class ETLPipeline
             // Fase 3: Procesar Clientes
             await ProcessEntityAsync<Cliente>("clients.csv", "Clientes");
 
-            // Fase 4: Procesar Encuestas (requiere Clientes y Productos)
+            // Fase 4: Cargar mapeos de IDs para FK
+            await LoadIdMappingsAsync();
+
+            // Fase 5: Procesar Encuestas (requiere Clientes y Productos)
             await ProcessEntityAsync<Encuesta>("surveys_part1.csv", "Encuestas");
 
-            // Fase 5: Procesar Comentarios Sociales
+            // Fase 6: Procesar Comentarios Sociales
             await ProcessEntityAsync<ComentarioSocial>("social_comments.csv", "Comentarios Sociales");
 
-            // Fase 6: Procesar Reseñas Web
+            // Fase 7: Procesar Reseñas Web
             await ProcessEntityAsync<ReseñaWeb>("web_reviews.csv", "Reseñas Web");
 
             var endTime = DateTime.Now;
@@ -86,8 +89,6 @@ public class ETLPipeline
             // EXTRACCIÓN
             _logger.LogInformation($"Extrayendo datos de {csvFileName}");
             var csvFilePath = Path.Combine(_csvFilesPath, csvFileName);
-            _logger.LogInformation($"Ruta completa del archivo: {csvFilePath}");
-            _logger.LogInformation($"¿Existe el archivo?: {File.Exists(csvFilePath)}");
             var datosExtraidos = await extractor.ExtractFromCsvAsync(csvFilePath);
             _logger.LogInformation($"Extraídos {datosExtraidos.Count()} registros de {entityName}");
 
@@ -153,11 +154,34 @@ public class ETLPipeline
         }
     }
 
+    private async Task LoadIdMappingsAsync()
+    {
+        try
+        {
+            _logger.LogInformation("Cargando mapeos de IDs para referencias FK...");
+
+            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
+            var logger = loggerFactory.CreateLogger<IdMappingService>();
+            _idMappingService = new IdMappingService(logger, _configuration);
+
+            await _idMappingService.LoadFuenteIdsAsync();
+            await _idMappingService.LoadProductoIdsAsync();
+            await _idMappingService.LoadClienteIdsAsync();
+
+            _logger.LogInformation("Mapeos de IDs cargados exitosamente");
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error cargando mapeos de IDs");
+            throw;
+        }
+    }
+
     private IExtractor<T> CreateExtractor<T>() where T : class
     {
         var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
         var logger = loggerFactory.CreateLogger<CsvExtractor<T>>();
-        return new CsvExtractor<T>(logger);
+        return new CsvExtractor<T>(logger, _idMappingService);
     }
 
     private ITransformador<T> CreateTransformador<T>() where T : class

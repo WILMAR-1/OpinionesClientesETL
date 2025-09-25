@@ -12,10 +12,12 @@ public class CsvExtractor<T> : IExtractor<T> where T : class
 {
     private readonly ILogger<CsvExtractor<T>> _logger;
     private readonly CsvConfiguration _csvConfig;
+    private readonly IdMappingService? _idMappingService;
 
-    public CsvExtractor(ILogger<CsvExtractor<T>> logger)
+    public CsvExtractor(ILogger<CsvExtractor<T>> logger, IdMappingService? idMappingService = null)
     {
         _logger = logger;
+        _idMappingService = idMappingService;
         _csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
         {
             HasHeaderRecord = true,
@@ -127,15 +129,15 @@ public class CsvExtractor<T> : IExtractor<T> where T : class
         }
         else if (entityType == typeof(Encuesta))
         {
-            context.RegisterClassMap<EncuestaMap>();
+            context.RegisterClassMap(new EncuestaMap(_idMappingService));
         }
         else if (entityType == typeof(ComentarioSocial))
         {
-            context.RegisterClassMap<ComentarioSocialMap>();
+            context.RegisterClassMap(new ComentarioSocialMap(_idMappingService));
         }
         else if (entityType == typeof(ReseñaWeb))
         {
-            context.RegisterClassMap<ReseñaWebMap>();
+            context.RegisterClassMap(new ReseñaWebMap(_idMappingService));
         }
     }
 }
@@ -201,11 +203,11 @@ public sealed class ClienteMap : ClassMap<Cliente>
 
 public sealed class EncuestaMap : ClassMap<Encuesta>
 {
-    public EncuestaMap()
+    public EncuestaMap(IdMappingService? idMappingService)
     {
-        Map(m => m.ClienteID).Optional().Default(1);
-        Map(m => m.ProductoID).Optional().Default(1);
-        Map(m => m.FuenteID).Optional().Default(1);
+        Map(m => m.ClienteID).Convert(args => idMappingService?.GetRandomClienteId() ?? 1);
+        Map(m => m.ProductoID).Convert(args => idMappingService?.GetRandomProductoId() ?? 1);
+        Map(m => m.FuenteID).Convert(args => idMappingService?.GetRandomFuenteId() ?? 1);
         Map(m => m.TituloEncuesta).Optional().Default("Encuesta Importada");
         Map(m => m.PreguntaPrincipal).Optional();
         Map(m => m.CalificacionGeneral).Optional();
@@ -217,11 +219,11 @@ public sealed class EncuestaMap : ClassMap<Encuesta>
 
 public sealed class ComentarioSocialMap : ClassMap<ComentarioSocial>
 {
-    public ComentarioSocialMap()
+    public ComentarioSocialMap(IdMappingService? idMappingService)
     {
-        Map(m => m.ProductoID).Optional().Default(1);
-        Map(m => m.FuenteID).Optional().Default(1);
-        Map(m => m.PlataformaSocial).Optional().Default("Desconocida");
+        Map(m => m.ProductoID).Convert(args => idMappingService?.GetRandomProductoId() ?? 1);
+        Map(m => m.FuenteID).Convert(args => idMappingService?.GetRandomFuenteId() ?? 1);
+        Map(m => m.PlataformaSocial).Optional().Default("Facebook");
         Map(m => m.TextoComentario).Optional().Default("Comentario importado");
         Map(m => m.SentimientoAnalizado).Optional().Default("Neutral");
         Map(m => m.FechaPublicacion).Optional().Default(DateTime.Now);
@@ -230,11 +232,11 @@ public sealed class ComentarioSocialMap : ClassMap<ComentarioSocial>
 
 public sealed class ReseñaWebMap : ClassMap<ReseñaWeb>
 {
-    public ReseñaWebMap()
+    public ReseñaWebMap(IdMappingService? idMappingService)
     {
-        Map(m => m.ProductoID).Optional().Default(1);
-        Map(m => m.FuenteID).Optional().Default(1);
-        Map(m => m.SitioWeb).Optional().Default("Desconocido");
+        Map(m => m.ProductoID).Convert(args => idMappingService?.GetRandomProductoId() ?? 1);
+        Map(m => m.FuenteID).Convert(args => idMappingService?.GetRandomFuenteId() ?? 1);
+        Map(m => m.SitioWeb).Optional().Default("Amazon");
         Map(m => m.TextoReseña).Optional().Default("Reseña importada");
         Map(m => m.SentimientoAnalizado).Optional().Default("Neutral");
         Map(m => m.FechaReseña).Optional().Default(DateTime.Now);
