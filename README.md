@@ -1,5 +1,11 @@
 # Customer Opinions Analysis ETL Pipeline
 
+**Estudiante:** Wilmar Gomez
+**Matrícula:** 2024-0103
+**Período:** C3-2025
+**Asignatura:** Electiva 1
+**Profesor:** Francis Ramirez
+
 ETL pipeline for processing customer opinion data from CSV files to SQL Server database.
 
 ## Features

@@ -14,8 +14,10 @@ internal class Program
         // Configurar consola para UTF-8
         Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-        Console.WriteLine("🚀 Sistema de Análisis de Opiniones de Clientes - Pipeline ETL");
+        Console.WriteLine("Sistema de Análisis de Opiniones de Clientes - Pipeline ETL");
         Console.WriteLine("================================================================");
+        Console.WriteLine("Estudiante: Wilmar Gomez | Matrícula: 2024-0103");
+        Console.WriteLine("C3-2025 | Electiva 1 | Prof. Francis Ramirez");
         Console.WriteLine("Desarrollado con .NET 9 | Principios SOLID y POO");
         Console.WriteLine();
 
@@ -31,7 +33,7 @@ internal class Program
                 var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
                 var pipeline = scope.ServiceProvider.GetRequiredService<ETLPipeline>();
 
-                logger.LogInformation("🏁 Iniciando aplicación ETL");
+                logger.LogInformation("Iniciando aplicación ETL");
 
                 // Validar argumentos de línea de comandos
                 if (args.Length > 0 && args[0] == "--help")
@@ -48,32 +50,31 @@ internal class Program
                 if (success)
                 {
                     Console.WriteLine();
-                    Console.WriteLine("🎉 PIPELINE ETL COMPLETADO EXITOSAMENTE");
-                    Console.WriteLine($"⏱️  Tiempo total de ejecución: {stopwatch.Elapsed.TotalMinutes:F2} minutos");
-                    Console.WriteLine("📊 Para ver los resultados, ejecuta las consultas SQL en tu base de datos");
+                    Console.WriteLine("PIPELINE ETL COMPLETADO EXITOSAMENTE");
+                    Console.WriteLine($"Tiempo total de ejecución: {stopwatch.Elapsed.TotalMinutes:F2} minutos");
+                    Console.WriteLine("Para ver los resultados, ejecuta las consultas SQL en tu base de datos");
 
                     // Mostrar estadísticas básicas
                     await ShowDatabaseStats(pipeline, logger);
                 }
                 else
                 {
-                    Console.WriteLine("❌ EL PIPELINE ETL FALLÓ");
-                    Console.WriteLine("🔍 Revisa los logs para más detalles");
+                    Console.WriteLine("EL PIPELINE ETL FALLÓ");
+                    Console.WriteLine("Revisa los logs para más detalles");
                     Environment.ExitCode = 1;
                 }
             }
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"💥 ERROR CRÍTICO: {ex.Message}");
-            Console.WriteLine("📋 Detalles completos del error:");
+            Console.WriteLine($"ERROR CRÍTICO: {ex.Message}");
+            Console.WriteLine("Detalles completos del error:");
             Console.WriteLine(ex.ToString());
             Environment.ExitCode = 1;
         }
 
         Console.WriteLine();
-        Console.WriteLine("Presiona cualquier tecla para salir...");
-        Console.ReadKey();
+        Console.WriteLine("Proceso completado.");
     }
 
     static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -101,7 +102,7 @@ internal class Program
 
     static void ShowHelp()
     {
-        Console.WriteLine("🆘 AYUDA - Sistema de Análisis de Opiniones de Clientes ETL");
+        Console.WriteLine("AYUDA - Sistema de Análisis de Opiniones de Clientes ETL");
         Console.WriteLine("============================================================");
         Console.WriteLine();
         Console.WriteLine("DESCRIPCIÓN:");
@@ -136,7 +137,7 @@ internal class Program
         try
         {
             Console.WriteLine();
-            Console.WriteLine("📊 ESTADÍSTICAS DE BASE DE DATOS");
+            Console.WriteLine("ESTADÍSTICAS DE BASE DE DATOS");
             Console.WriteLine("================================");
             Console.WriteLine("Para obtener estadísticas detalladas, ejecuta estas consultas:");
             Console.WriteLine();

@@ -1,6 +1,12 @@
 -- ============================================
 -- Sistema de Análisis de Opiniones de Clientes
 -- Pipeline ETL - Modelo de Base de Datos
+--
+-- Estudiante: Wilmar Gomez
+-- Matrícula: 2024-0103
+-- Período: C3-2025
+-- Asignatura: Electiva 1
+-- Profesor: Francis Ramirez
 -- ============================================
 
 -- Crear base de datos
