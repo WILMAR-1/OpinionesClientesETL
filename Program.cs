@@ -146,7 +146,7 @@ internal class Program
             Console.WriteLine("UNION ALL SELECT 'Clientes', COUNT(*) FROM Clientes");
             Console.WriteLine("UNION ALL SELECT 'Encuestas', COUNT(*) FROM Encuestas");
             Console.WriteLine("UNION ALL SELECT 'ComentariosSociales', COUNT(*) FROM ComentariosSociales");
-            Console.WriteLine("UNION ALL SELECT 'ReseñasWeb', COUNT(*) FROM ReseñasWeb");
+            Console.WriteLine("UNION ALL SELECT 'ReseñasWeb', COUNT(*) FROM ResenasWeb");
             Console.WriteLine();
             Console.WriteLine("-- Para ver muestra de datos:");
             Console.WriteLine("SELECT TOP 5 * FROM vw_OpinionesPorProducto");

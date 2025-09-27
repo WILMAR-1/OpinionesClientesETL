@@ -145,8 +145,8 @@ public class DatabaseCargador<T> : ICargador<T> where T : class
                 VALUES (@ClienteID, @ProductoID, @FuenteID, @PlataformaSocial, @UsuarioSocial, @TextoComentario, @NumLikes, @NumCompartidos, @NumRespuestas, @HashtagsPrincipales, @SentimientoAnalizado, @ConfianzaSentimiento, @FechaPublicacion, @FechaExtraccion)",
 
             ReseñaWeb => @"
-                INSERT INTO ReseñasWeb (ClienteID, ProductoID, FuenteID, SitioWeb, TituloReseña, TextoReseña, CalificacionNumerica, CalificacionEstrellas, UsuarioReseñador, CompraVerificada, VotosUtiles, VotosTotal, SentimientoAnalizado, ConfianzaSentimiento, FechaReseña, FechaExtraccion)
-                VALUES (@ClienteID, @ProductoID, @FuenteID, @SitioWeb, @TituloReseña, @TextoReseña, @CalificacionNumerica, @CalificacionEstrellas, @UsuarioReseñador, @CompraVerificada, @VotosUtiles, @VotosTotal, @SentimientoAnalizado, @ConfianzaSentimiento, @FechaReseña, @FechaExtraccion)",
+                INSERT INTO ResenasWeb (ClienteID, ProductoID, FuenteID, SitioWeb, TituloResena, TextoResena, CalificacionNumerica, CalificacionEstrellas, UsuarioResenador, CompraVerificada, VotosUtiles, VotosTotal, SentimientoAnalizado, ConfianzaSentimiento, FechaResena, FechaExtraccion)
+                VALUES (@ClienteID, @ProductoID, @FuenteID, @SitioWeb, @TituloResena, @TextoResena, @CalificacionNumerica, @CalificacionEstrellas, @UsuarioResenador, @CompraVerificada, @VotosUtiles, @VotosTotal, @SentimientoAnalizado, @ConfianzaSentimiento, @FechaResena, @FechaExtraccion)",
 
             _ => throw new NotSupportedException($"Tipo de entidad no soportado: {typeof(T).Name}")
         };
@@ -233,17 +233,17 @@ public class DatabaseCargador<T> : ICargador<T> where T : class
                 command.Parameters.AddWithValue("@ProductoID", reseña.ProductoID);
                 command.Parameters.AddWithValue("@FuenteID", reseña.FuenteID);
                 command.Parameters.AddWithValue("@SitioWeb", reseña.SitioWeb);
-                command.Parameters.AddWithValue("@TituloReseña", (object?)reseña.TituloReseña ?? DBNull.Value);
-                command.Parameters.AddWithValue("@TextoReseña", reseña.TextoReseña);
+                command.Parameters.AddWithValue("@TituloResena", (object?)reseña.TituloReseña ?? DBNull.Value);
+                command.Parameters.AddWithValue("@TextoResena", reseña.TextoReseña);
                 command.Parameters.AddWithValue("@CalificacionNumerica", (object?)reseña.CalificacionNumerica ?? DBNull.Value);
                 command.Parameters.AddWithValue("@CalificacionEstrellas", (object?)reseña.CalificacionEstrellas ?? DBNull.Value);
-                command.Parameters.AddWithValue("@UsuarioReseñador", (object?)reseña.UsuarioReseñador ?? DBNull.Value);
+                command.Parameters.AddWithValue("@UsuarioResenador", (object?)reseña.UsuarioReseñador ?? DBNull.Value);
                 command.Parameters.AddWithValue("@CompraVerificada", reseña.CompraVerificada);
                 command.Parameters.AddWithValue("@VotosUtiles", reseña.VotosUtiles);
                 command.Parameters.AddWithValue("@VotosTotal", reseña.VotosTotal);
                 command.Parameters.AddWithValue("@SentimientoAnalizado", (object?)reseña.SentimientoAnalizado ?? DBNull.Value);
                 command.Parameters.AddWithValue("@ConfianzaSentimiento", (object?)reseña.ConfianzaSentimiento ?? DBNull.Value);
-                command.Parameters.AddWithValue("@FechaReseña", reseña.FechaReseña);
+                command.Parameters.AddWithValue("@FechaResena", reseña.FechaReseña);
                 command.Parameters.AddWithValue("@FechaExtraccion", reseña.FechaExtraccion);
                 break;
 
